@@ -13,7 +13,7 @@ public interface Character {
     void takeDamage(int damage);
     void heal();
     void levelUp();
-    int getLevel();
+    String getLevel();
     String getExperience();
     void gainExperience(int amount);
     void useSpecialAbility(Character target);

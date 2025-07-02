@@ -14,7 +14,11 @@ public class CombatSystem {
     }
 
     public void startBattle() {
-        System.out.println("A battle has started between " + player.getName() + " and " + enemy.getName());
+        System.out.println("A battle has started between "+
+        ANSIColor.BLUE+player.getName()+
+        ANSIColor.RESET+" and "+
+        ANSIColor.RED+
+        enemy.getName()+ANSIColor.RESET);
         while (player.isAlive() && enemy.isAlive()) {
             playerTurn();
             if (enemy.isAlive()) {
@@ -22,12 +26,17 @@ public class CombatSystem {
             }
         }
         if (player.isAlive()) {
-            System.out.println(player.getName() + " has won the battle!");
+            System.out.println(ANSIColor.BLUE + player.getName()
+            +ANSIColor.GREEN+" has won the battle!"
+            +ANSIColor.RESET);
             player.gainExperience(50);
             menu.displayCombatMenu();
         } else {
-            System.out.println(enemy.getName() + " has won the battle!");
-            System.out.println("Game Over.");
+            System.out.println(ANSIColor.BLUE + enemy.getName()
+            +ANSIColor.RED+" has won the battle!"
+            +ANSIColor.RESET);
+            System.out.println(ANSIColor.RED+"Game Over."
+            +ANSIColor.RESET);
         }
     }
 
@@ -35,21 +44,33 @@ public class CombatSystem {
     private void playerTurn() {
         int damage =(int) (Math.random() * player.attack()) + 10; // Random damage
 
-        System.out.println("Select an action:");
-        System.out.println("1. Attack");
-        System.out.println("2. Heal");
-        System.out.println("3. Use Special Ability");
+        System.out.println(ANSIColor.YELLOW+"Select an action:"+ANSIColor.RESET);
+        System.out.println(ANSIColor.YELLOW+"1. "+ANSIColor.RED+"Attack"+ANSIColor.RESET);
+        System.out.println(ANSIColor.YELLOW+"2. "+ANSIColor.GREEN+"Heal"+ANSIColor.RESET);
+        System.out.println(ANSIColor.YELLOW+"3. "+ANSIColor.RED+"Use Special Ability"+ANSIColor.RESET);
         playerAction = Menu.playerInput();
 
         if (playerAction == 1) {
             Menu.clearConsole();
             enemy.takeDamage(damage);
-            System.out.println(player.getName() + " attacks " + enemy.getName() + " for " + damage + " damage.");
-            System.out.println(enemy.getName() + "'s remaining health: " + enemy.getHealth());
+            System.out.println(ANSIColor.BLUE+player.getName()+
+            ANSIColor.RESET+" attacks "+
+            ANSIColor.RED+enemy.getName()+
+            ANSIColor.RESET+" for "+
+            ANSIColor.RED+damage+
+            ANSIColor.RESET+" damage.");
+    
+            System.out.println(ANSIColor.RED+enemy.getName()+
+            ANSIColor.RESET+"'s remaining health: "+
+            ANSIColor.GREEN+enemy.getHealth()+ANSIColor.RESET);
         } else if (playerAction == 2) {
+            Menu.clearConsole();
             player.heal();
-            System.out.println(player.getName() + "'s current health: " + player.getHealth());
+            System.out.println(ANSIColor.BLUE+player.getName()+
+            ANSIColor.RESET+"'s current health: "+
+            ANSIColor.GREEN+ player.getHealth()+ANSIColor.RESET);
         } else if (playerAction == 3) {
+            Menu.clearConsole();
             if (player.specialAbilityUsed() != true) {
                 player.useSpecialAbility(enemy);
                 System.out.println(player.getName() + " uses special ability: " + player.getSpecialAbility());
@@ -67,10 +88,20 @@ public class CombatSystem {
 
 
     private void enemyTurn() {
-        int damage =(int) (Math.random() * enemy.attack()) + 10; // Random damage
+        int damage =(int) (Math.random() * enemy.attack()) + 5; // Random damage
         player.takeDamage(damage);
+
         System.out.println();
-        System.out.println(enemy.getName() + " attacks " + player.getName() + " for " + damage + " damage.");
-        System.out.println(player.getName() + "'s remaining health: " + player.getHealth());
+        System.out.println(ANSIColor.RED+enemy.getName()
+        +ANSIColor.RESET+" attacks "
+        +ANSIColor.BLUE+player.getName()
+        +ANSIColor.RESET+" for "
+        +ANSIColor.RED+damage
+        +ANSIColor.RESET+" damage.");
+
+        System.out.println(ANSIColor.BLUE+player.getName()
+        +ANSIColor.RESET+"'s remaining health: "
+        +ANSIColor.GREEN+ player.getHealth()+ANSIColor.RESET);
+        System.out.println();
     }
 }

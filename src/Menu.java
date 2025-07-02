@@ -19,7 +19,7 @@ public class Menu{
 
     public static int playerInput() {  // Method to handle player input
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter your choice: ");
+        System.out.print(ANSIColor.ORANGE+"Enter your choice: "+ANSIColor.RESET);
         return scanner.nextInt();
     }
 
@@ -46,26 +46,27 @@ public class Menu{
 
     public void startMenu() {
         clearConsole();
-        System.out.println("Welcome to the Game!");
+        System.out.println(ANSIColor.GREEN+"Welcome to the Game!"+ANSIColor.RESET);
+        System.out.println();
         characterSelectMenu();
     }
 
     public void characterSelectMenu() {
-        System.out.println("Choose your character:");
-        System.out.println("1."+ mage.toString());
-        System.out.println("2."+ warmonger.toString());
+        System.out.println(ANSIColor.YELLOW+"Choose your character:"+ANSIColor.RESET);
+        System.out.println(ANSIColor.YELLOW+"1."+ANSIColor.RESET+mage.toString());
+        System.out.println(ANSIColor.YELLOW+"2."+ANSIColor.RESET+warmonger.toString());
         choice = playerInput();
 
         if (choice == 1) {
             selectedCharacter = mage;
             clearConsole();
-            System.out.println("You selected: " + selectedCharacter.getName());
+            System.out.println("You selected: "+ANSIColor.BLUE+selectedCharacter.getName()+ANSIColor.RESET);
         } else if (choice == 2) {
             selectedCharacter = warmonger;
             clearConsole();
-            System.out.println("You selected: " + selectedCharacter.getName());
+            System.out.println("You selected: "+ANSIColor.BLUE+selectedCharacter.getName()+ANSIColor.RESET);
         } else {
-            System.out.println("Invalid choice.");
+            System.out.println(ANSIColor.RED+"Invalid choice."+ANSIColor.RESET);
             characterSelectMenu(); // Restart the menu if invalid choice
             return;
         }
@@ -74,41 +75,44 @@ public class Menu{
 
 
     public void displayCombatMenu() {
-        System.out.println("Combat Menu:");
-        System.out.println("1. Start Battle");
-        System.out.println("2. View Inventory");
-        System.out.println("3. View Character Stats");
-        System.out.println("4. Back to Main Menu");
-        System.out.print("Please select an option: ");
+        System.out.println();
+        System.out.println(ANSIColor.RED+"Combat Menu:"+ANSIColor.RESET);
+        System.out.println(ANSIColor.YELLOW+"1. Start Battle"+ANSIColor.RESET);
+        System.out.println(ANSIColor.YELLOW+"2. View Inventory"+ANSIColor.RESET);
+        System.out.println(ANSIColor.YELLOW+"3. View Character Stats"+ANSIColor.RESET);
+        System.out.println(ANSIColor.YELLOW+"4. Back to Main Menu"+ANSIColor.RESET);
         int combatChoice = playerInput();
 
         // Handle combat menu choices
         if(combatChoice == 1) {
             clearConsole();
-            System.out.println("Starting battle...");
+            System.out.println(ANSIColor.ORANGE+"Starting battle..."+ANSIColor.RESET);
             Character enemyCharacter = enemyCharacters.get(random.nextInt(enemyCharacters.size())); // Randomly select an enemy character
             enemyCharacters.remove(enemyCharacter); // Remove the selected enemy from the array to avoid repetition in future battles
             if (enemyCharacters.isEmpty()) {
-                System.out.println("You have defeated all enemies!");
+                System.out.println(ANSIColor.GREEN+"You have defeated all enemies!"+ANSIColor.RESET);
                 return; // Exit if no enemies left
             }
             CombatSystem combatSystem = new CombatSystem(selectedCharacter, enemyCharacter, this); // Start combat with the selected character and a random enemy
-            System.out.println("You are facing: " + enemyCharacter.getName());
+            System.out.println("You are facing: "+ANSIColor.RED+enemyCharacter.getName()+ANSIColor.RESET);
             combatSystem.startBattle(); // Start the battle
         } else if(combatChoice == 2) {
             clearConsole();
-            System.out.println("Inventory is empty.");
+            System.out.println(ANSIColor.ORANGE+"Inventory is empty."+ANSIColor.RESET);
             displayCombatMenu(); // Go back to the combat menu
         } else if (combatChoice == 3) {
             clearConsole();
-            selectedCharacter.toString();
+            System.out.println(selectedCharacter.toString());
+            System.out.println(selectedCharacter.getLevel());
+            System.out.println(selectedCharacter.getExperience());
             
             displayCombatMenu(); // Go back to the combat menu
         } else if(combatChoice == 4) {
-            startMenu(); // Go back to the main menu
+            clearConsole();
+            characterSelectMenu(); // Go back to the select menu
         } else {
             clearConsole();
-            System.out.println("Invalid choice. Please try again.");
+            System.out.println(ANSIColor.ORANGE+"Invalid choice. Please try again."+ANSIColor.RESET);
             displayCombatMenu(); // Restart the combat menu
         }
     }

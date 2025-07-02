@@ -1,6 +1,8 @@
 package Characters;
 // This abstract class provides a base implementation for the Character interface.
 
+import javax.print.DocFlavor.STRING;
+
 public abstract class AbstractCharacter implements Character {
     private String name;
     private int health;
@@ -36,11 +38,15 @@ public abstract class AbstractCharacter implements Character {
     @Override public int attack() {
         return attackPower;
     }
-    @Override public int getLevel() {
-    return level;
+    @Override public String getLevel() {
+    return "Your level is "+ANSIColor.PURPLE+level+ANSIColor.RESET;
     }
     @Override public String getExperience() {
-    return "You have "+experience+ " experience points. "+100 * level +" experience points are needed to level up.";
+    return "You have "
+    +ANSIColor.PURPLE+experience
+    +ANSIColor.RESET+" experience points. "
+    +ANSIColor.PURPLE+100 * level 
+    +ANSIColor.RESET+" experience points are needed to level up.";
     }
     @Override public void setAlive(boolean alive) {
     this.alive = alive;
@@ -53,16 +59,26 @@ public abstract class AbstractCharacter implements Character {
     }
     @Override
     public String toString() {
-        return "Character: " + getName()
-        +", Health: " + getHealth()
-        +", Attack Power: " + getAttackPower() 
-        +", Level: " + getLevel()
-        +", Experience: " + getExperience()
-        +"Special Ability: " + getSpecialAbility();
+        return "Character: "
+        +ANSIColor.BLUE+getName()
+        +ANSIColor.RESET+", Health: "
+        +ANSIColor.GREEN+getHealth()
+        +ANSIColor.RESET+", Attack Power: "
+        +ANSIColor.RED+getAttackPower() 
+        +ANSIColor.RESET+" Special Ability: "
+        +ANSIColor.RED+getSpecialAbility()
+        +ANSIColor.RESET;
     }
 
     public abstract void useSpecialAbility(Character target);
 
+
+    @Override public void takeDamage(int damage) {
+        if (damage < 0) {
+            throw new IllegalArgumentException("Damage cannot be negative");
+        }
+        setHealth(health - damage);
+    }
 
     public void setHealth(int health) {
         this.health = health;
@@ -71,20 +87,18 @@ public abstract class AbstractCharacter implements Character {
             this.health = 0; // Ensure health does not go below zero
         }
     }
-    @Override public void takeDamage(int damage) {
-        if (damage < 0) {
-            throw new IllegalArgumentException("Damage cannot be negative");
-        }
-        setHealth(health - damage);
-    }
+
     @Override public void heal() {
         int randomHeal = (int) (Math.random() * 40) + 20; // Random heal between 20 and 40
         if (health + randomHeal > maxHealth) { // Assuming max health is 100
-            randomHeal = 100 - health; // Heal only up to max health
-            health = 100; // Set health to max
+            randomHeal = maxHealth - health; // Heal only up to max health
+            health = maxHealth; // Set health to max
         }
         else health += randomHeal;
-        System.out.println(name + " heals for " + randomHeal + " health.");
+        System.out.println(ANSIColor.BLUE+name
+        +ANSIColor.RESET+" heals for "
+        +ANSIColor.GREEN+randomHeal
+        +ANSIColor.RESET+" health.");
     }
 
 
@@ -97,7 +111,10 @@ public abstract class AbstractCharacter implements Character {
             throw new IllegalArgumentException("Experience gain cannot be negative");
         }
         experience += amount;
-        System.out.println(name + " has gained " + amount + " experience points.");
+        System.out.println(ANSIColor.BLUE+name
+        +ANSIColor.RESET+" has gained "
+        +ANSIColor.PURPLE+amount
+        +ANSIColor.RESET+" experience points.");
         // Check for level up
         if (experience >= 100 * level) { // Example condition for leveling up
             levelUp();
@@ -111,7 +128,10 @@ public abstract class AbstractCharacter implements Character {
         maxHealth += 10; // Increase max health on level up
         health += 10; // Increase health on level up
         
-        System.out.println(name + " has leveled up to level " + level + "!");
+        System.out.println(ANSIColor.BLUE+name
+        +ANSIColor.RESET+" has leveled up to level "
+        +ANSIColor.PURPLE+level
+        +ANSIColor.RESET+"!");
     }
 
 

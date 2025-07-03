@@ -1,4 +1,6 @@
 import java.util.Scanner;
+
+import Characters.ANSIColor;
 import Characters.Character;
 import Characters.PlayerCharacters.Mage;
 import Characters.PlayerCharacters.Warmonger;
@@ -103,7 +105,7 @@ public class Menu{
         } else if (combatChoice == 3) {
             clearConsole();
             System.out.println(selectedCharacter.toString());
-            System.out.println(selectedCharacter.getLevel());
+            System.out.println("Your level is "+ANSIColor.PURPLE+selectedCharacter.getLevel()+ANSIColor.RESET);
             System.out.println(selectedCharacter.getExperience());
             
             displayCombatMenu(); // Go back to the combat menu

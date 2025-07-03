@@ -5,6 +5,8 @@ public interface Character {
     int getHealth();
     int getAttackPower();
     String getSpecialAbility();
+    int getLevel();
+    String getExperience();
     boolean specialAbilityUsed();
     boolean isAlive();
     int attack();
@@ -13,8 +15,8 @@ public interface Character {
     void takeDamage(int damage);
     void heal();
     void levelUp();
-    String getLevel();
-    String getExperience();
     void gainExperience(int amount);
     void useSpecialAbility(Character target);
+    void setSpecialAbilityUsed(boolean used);
+    void setAttackPower(int attackPower);
 }

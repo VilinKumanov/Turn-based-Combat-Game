@@ -1,17 +1,16 @@
 package Characters;
 // This abstract class provides a base implementation for the Character interface.
 
-import javax.print.DocFlavor.STRING;
-
 public abstract class AbstractCharacter implements Character {
     private String name;
     private int health;
-    private int attackPower;
+    protected int attackPower;
     private boolean alive;
     private int level;
     private int experience;
     private int maxHealth;
-    public String specialAbility;
+    protected String specialAbility;
+    public boolean specialAbilityUsed;
 
     public AbstractCharacter(String name, int health, int attackPower, String specialAbility) {
         this.name = name;
@@ -38,8 +37,8 @@ public abstract class AbstractCharacter implements Character {
     @Override public int attack() {
         return attackPower;
     }
-    @Override public String getLevel() {
-    return "Your level is "+ANSIColor.PURPLE+level+ANSIColor.RESET;
+    @Override public int getLevel() {
+    return level;
     }
     @Override public String getExperience() {
     return "You have "
@@ -51,12 +50,10 @@ public abstract class AbstractCharacter implements Character {
     @Override public void setAlive(boolean alive) {
     this.alive = alive;
     }
-    public String getSpecialAbility() {
+    @Override public String getSpecialAbility() {
         return specialAbility;
     }
-    @Override public boolean specialAbilityUsed() {
-        return true;
-    }
+
     @Override
     public String toString() {
         return "Character: "
@@ -70,8 +67,19 @@ public abstract class AbstractCharacter implements Character {
         +ANSIColor.RESET;
     }
 
+    public void setSpecialAbilityUsed(boolean used) {
+        this.specialAbilityUsed = used;
+    }
+
+    public void setAttackPower(int attackPower) {
+        this.attackPower = attackPower;
+    }
+
     public abstract void useSpecialAbility(Character target);
 
+    public boolean specialAbilityUsed() {
+        return specialAbilityUsed;
+    }
 
     @Override public void takeDamage(int damage) {
         if (damage < 0) {

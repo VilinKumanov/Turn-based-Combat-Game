@@ -10,10 +10,12 @@ public class PlayerCharacters {
 
             @Override
             public void useSpecialAbility(Character target) {
+            setSpecialAbilityUsed(true);
             // Nullify enemy's next attack
-            System.out.println(getName() + " uses Nullification! " + target.getName() + " loses their next turn.");
-            // You can add logic to set a flag on the target, etc.
-            
+            System.out.println(ANSIColor.BLUE+getName()
+            +ANSIColor.RESET+" uses Nullification! "
+            +ANSIColor.RED+target.getName()
+            +ANSIColor.RESET+"'s next 2 attack are nullified.");
             }
             
         }
@@ -25,8 +27,13 @@ public class PlayerCharacters {
 
             @Override
             public void useSpecialAbility(Character target) {
+                setSpecialAbilityUsed(true);
                 // Increase attack power for the next turn
-                System.out.println(getName() + " uses Berserk! Attack power increased for the next turn.");
+                System.out.println(ANSIColor.BLUE+getName()+
+                ANSIColor.RESET+" uses "
+                +ANSIColor.RED+specialAbility
+                +ANSIColor.RESET+" Attack power increased for the next 2 turns.");
+                setAttackPower(attackPower + 20); // Increase attack power by 20
             }
         }
 

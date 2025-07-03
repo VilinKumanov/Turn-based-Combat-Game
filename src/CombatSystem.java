@@ -1,10 +1,15 @@
 import java.util.Random;
+
+import Characters.ANSIColor;
 import Characters.Character; 
 
 public class CombatSystem {
     private Character player;
     private Character enemy;
     private Menu menu;
+    private int turns = 0;
+    private int enemyOriginalAttackPower; 
+    private int playerOriginalAttackPower; 
     int playerAction;
 
     public CombatSystem(Character player, Character enemy, Menu menu) {
@@ -19,6 +24,7 @@ public class CombatSystem {
         ANSIColor.RESET+" and "+
         ANSIColor.RED+
         enemy.getName()+ANSIColor.RESET);
+
         while (player.isAlive() && enemy.isAlive()) {
             playerTurn();
             if (enemy.isAlive()) {
@@ -30,6 +36,7 @@ public class CombatSystem {
             +ANSIColor.GREEN+" has won the battle!"
             +ANSIColor.RESET);
             player.gainExperience(50);
+            player.setSpecialAbilityUsed(false); // Reset special ability usage
             menu.displayCombatMenu();
         } else {
             System.out.println(ANSIColor.BLUE + enemy.getName()
@@ -42,7 +49,7 @@ public class CombatSystem {
 
 
     private void playerTurn() {
-        int damage =(int) (Math.random() * player.attack()) + 10; // Random damage
+        int damage =(int) (Math.random() * player.attack()) + (+ 10 * player.getLevel()); // Random damage between 10 and attack power
 
         System.out.println(ANSIColor.YELLOW+"Select an action:"+ANSIColor.RESET);
         System.out.println(ANSIColor.YELLOW+"1. "+ANSIColor.RED+"Attack"+ANSIColor.RESET);
@@ -71,12 +78,11 @@ public class CombatSystem {
             ANSIColor.GREEN+ player.getHealth()+ANSIColor.RESET);
         } else if (playerAction == 3) {
             Menu.clearConsole();
-            if (player.specialAbilityUsed() != true) {
+            if (!player.specialAbilityUsed()) {
                 player.useSpecialAbility(enemy);
-                System.out.println(player.getName() + " uses special ability: " + player.getSpecialAbility());
                 // Mark the special ability as used
             } else {
-                System.out.println(player.getName() + " has no special ability to use.");
+                System.out.println(player.getName() + " has used their special ability.");
             }
         } else {
             System.out.println("Invalid action. Please choose again.");
@@ -88,7 +94,34 @@ public class CombatSystem {
 
 
     private void enemyTurn() {
-        int damage =(int) (Math.random() * enemy.attack()) + 5; // Random damage
+        if (player.specialAbilityUsed())
+            if ("Nullification".equals(player.getSpecialAbility())) {
+                if (turns < 2) {
+                    turns++;
+                    enemyOriginalAttackPower = enemy.getAttackPower(); // Store original attack power
+                    System.out.println(ANSIColor.RED+enemy.getName()
+                    +ANSIColor.RESET+" is nullified and cannot attack this turn.");
+                    return; // Skip the enemy's turn if nullified
+                } else {
+                    turns = 0; // Reset after 2 turns
+                    System.out.println(ANSIColor.RED+enemy.getName()
+                    +ANSIColor.RESET+" is no longer nullified.");
+                    player.setSpecialAbilityUsed(false);
+                }
+            }
+            else if ("Berserk".equals(player.getSpecialAbility())) { //LOGIC STILL NOT WORKING
+                if (turns < 3) {
+                    turns++;
+                    playerOriginalAttackPower = player.getAttackPower(); // Store original attack power
+                    player.setAttackPower(player.getAttackPower() + 20); // Increase attack power by 20
+                } else {
+                    turns = 0; // Reset after 2 turns
+                    System.out.println(ANSIColor.BLUE+player.getName()
+                    +ANSIColor.RESET+" is no longer berserk.");
+                    player.setSpecialAbilityUsed(false);
+                }
+        }
+        int damage = (int) (Math.random() * enemy.attack()) + 10;
         player.takeDamage(damage);
 
         System.out.println();

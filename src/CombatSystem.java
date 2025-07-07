@@ -19,11 +19,12 @@ public class CombatSystem {
     }
 
     public void startBattle() {
-        System.out.println("A battle has started between "+
-        ANSIColor.BLUE+player.getName()+
-        ANSIColor.RESET+" and "+
-        ANSIColor.RED+
-        enemy.getName()+ANSIColor.RESET);
+
+        System.out.println("A battle has started between "
+        +ANSIColor.BLUE+player.getName()
+        +ANSIColor.RESET+" and "
+        +ANSIColor.RED
+        +enemy.getName()+ANSIColor.RESET);
 
         while (player.isAlive() && enemy.isAlive()) {
             playerTurn();
@@ -31,59 +32,66 @@ public class CombatSystem {
                 enemyTurn();
             }
         }
+        // Check who won the battle
         if (player.isAlive()) {
-            System.out.println(ANSIColor.BLUE + player.getName()
-            +ANSIColor.GREEN+" has won the battle!"
-            +ANSIColor.RESET);
+            System.out.println(ANSIColor.BLUE+player.getName()
+            +ANSIColor.GREEN+" has won the battle!"+ANSIColor.RESET);
+
             player.gainExperience(50);
             player.setSpecialAbilityUsed(false); // Reset special ability usage
             menu.displayCombatMenu();
+
         } else {
-            System.out.println(ANSIColor.BLUE + enemy.getName()
+            System.out.println(ANSIColor.BLUE+enemy.getName()
             +ANSIColor.RED+" has won the battle!"
             +ANSIColor.RESET);
-            System.out.println(ANSIColor.RED+"Game Over."
-            +ANSIColor.RESET);
+            System.out.println(ANSIColor.RED+"Game Over."+ANSIColor.RESET);
         }
     }
 
 
     private void playerTurn() {
-        int damage =(int) (Math.random() * player.attack()) + (+ 10 * player.getLevel()); // Random damage between 10 and attack power
-
         System.out.println(ANSIColor.YELLOW+"Select an action:"+ANSIColor.RESET);
         System.out.println(ANSIColor.YELLOW+"1. "+ANSIColor.RED+"Attack"+ANSIColor.RESET);
         System.out.println(ANSIColor.YELLOW+"2. "+ANSIColor.GREEN+"Heal"+ANSIColor.RESET);
         System.out.println(ANSIColor.YELLOW+"3. "+ANSIColor.RED+"Use Special Ability"+ANSIColor.RESET);
+
         playerAction = Menu.playerInput();
+        int damage =(int) (Math.random() * player.attack()) + (+ 10 * player.getLevel()); // Random damage between 10 and attack power
 
         if (playerAction == 1) {
+
             Menu.clearConsole();
             enemy.takeDamage(damage);
-            System.out.println(ANSIColor.BLUE+player.getName()+
-            ANSIColor.RESET+" attacks "+
-            ANSIColor.RED+enemy.getName()+
-            ANSIColor.RESET+" for "+
-            ANSIColor.RED+damage+
-            ANSIColor.RESET+" damage.");
+
+            System.out.println(ANSIColor.BLUE+player.getName()
+            +ANSIColor.RESET+" attacks "
+            +ANSIColor.RED+enemy.getName()
+            +ANSIColor.RESET+" for "
+            +ANSIColor.RED+damage
+            +ANSIColor.RESET+" damage.");
     
-            System.out.println(ANSIColor.RED+enemy.getName()+
-            ANSIColor.RESET+"'s remaining health: "+
-            ANSIColor.GREEN+enemy.getHealth()+ANSIColor.RESET);
+            System.out.println(ANSIColor.RED+enemy.getName()
+            +ANSIColor.RESET+"'s remaining health: "
+            +ANSIColor.GREEN+enemy.getHealth()+ANSIColor.RESET);
+
         } else if (playerAction == 2) {
             Menu.clearConsole();
             player.heal();
+
             System.out.println(ANSIColor.BLUE+player.getName()+
             ANSIColor.RESET+"'s current health: "+
             ANSIColor.GREEN+ player.getHealth()+ANSIColor.RESET);
         } else if (playerAction == 3) {
             Menu.clearConsole();
+
             if (!player.specialAbilityUsed()) {
                 player.useSpecialAbility(enemy);
                 // Mark the special ability as used
             } else {
                 System.out.println(player.getName() + " has used their special ability.");
             }
+            
         } else {
             System.out.println("Invalid action. Please choose again.");
             playerTurn(); // Restart the player's turn if invalid action
@@ -94,7 +102,7 @@ public class CombatSystem {
 
 
     private void enemyTurn() {
-        if (player.specialAbilityUsed())
+        if (player.specialAbilityUsed()) // Check if the player has used their special ability
             if ("Nullification".equals(player.getSpecialAbility())) {
                 if (turns < 2) {
                     turns++;
@@ -119,8 +127,10 @@ public class CombatSystem {
                     System.out.println(ANSIColor.BLUE+player.getName()
                     +ANSIColor.RESET+" is no longer berserk.");
                     player.setSpecialAbilityUsed(false);
+                    player.setAttackPower(playerOriginalAttackPower); // Reset attack power
                 }
         }
+        
         int damage = (int) (Math.random() * enemy.attack()) + 10;
         player.takeDamage(damage);
 

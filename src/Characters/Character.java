@@ -1,5 +1,7 @@
-package Characters;
+package Characters; 
+
 // This interface defines the methods that any character in the game must implement.
+
 public interface Character {
     String getName();
     int getHealth();

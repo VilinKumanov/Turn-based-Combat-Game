@@ -1,4 +1,5 @@
 package Characters;
+
 // Different characters for the combat system that the player can choose from
 
 public class PlayerCharacters {
@@ -9,7 +10,7 @@ public class PlayerCharacters {
             }
 
             @Override
-            public void useSpecialAbility(Character target) {
+            public void useSpecialAbility(AbstractCharacter target) {
             setSpecialAbilityUsed(true);
             // Nullify enemy's next attack
             System.out.println(ANSIColor.BLUE+getName()
@@ -26,7 +27,7 @@ public class PlayerCharacters {
             }
 
             @Override
-            public void useSpecialAbility(Character target) {
+            public void useSpecialAbility(AbstractCharacter target) {
                 setSpecialAbilityUsed(true);
                 // Increase attack power for the next turn
                 System.out.println(ANSIColor.BLUE+getName()+

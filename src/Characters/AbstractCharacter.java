@@ -1,147 +1,143 @@
 package Characters;
-// This abstract class provides a base implementation for the Character interface.
 
-public abstract class AbstractCharacter implements Character {
+public abstract class AbstractCharacter {
     private String name;
     private int health;
-    protected int attackPower;
-    private boolean alive;
+    private int maxHealth;
     private int level;
     private int experience;
-    private int maxHealth;
+    private boolean alive;
+    protected int attackPower;
     protected String specialAbility;
-    public boolean specialAbilityUsed;
+    private boolean specialAbilityUsed;
 
     public AbstractCharacter(String name, int health, int attackPower, String specialAbility) {
         this.name = name;
         this.health = health;
+        this.maxHealth = health;
         this.attackPower = attackPower;
-        this.alive = true;
+        this.specialAbility = specialAbility;
         this.level = 1;
         this.experience = 0;
-        this.maxHealth = health;
-        this.specialAbility = specialAbility;
+        this.alive = true;
+        this.specialAbilityUsed = false;
     }
-    @Override public String getName() {
+
+    // === Getters ===
+    public String getName() {
         return name;
     }
-    @Override public int getHealth() {
+
+    public int getHealth() {
         return health;
     }
-    @Override public int getAttackPower() {
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public int getAttackPower() {
         return attackPower;
     }
-    @Override public boolean isAlive() {
+
+    public boolean isAlive() {
         return alive && health > 0;
     }
-    @Override public int attack() {
-        return attackPower;
+
+    public int getLevel() {
+        return level;
     }
-    @Override public int getLevel() {
-    return level;
+
+    public String getExperience() {
+        return "You have " + ANSIColor.PURPLE + experience + ANSIColor.RESET + " experience points. "
+             + ANSIColor.PURPLE + getExperienceToLevelUp() + ANSIColor.RESET + " are needed to level up.";
     }
-    @Override public String getExperience() {
-    return "You have "
-    +ANSIColor.PURPLE+experience
-    +ANSIColor.RESET+" experience points. "
-    +ANSIColor.PURPLE+100 * level 
-    +ANSIColor.RESET+" experience points are needed to level up.";
-    }
-    @Override public void setAlive(boolean alive) {
-    this.alive = alive;
-    }
-    @Override public String getSpecialAbility() {
+
+    public String getSpecialAbility() {
         return specialAbility;
     }
 
-    @Override
-    public String toString() {
-        return "Character: "
-        +ANSIColor.BLUE+getName()
-        +ANSIColor.RESET+", Health: "
-        +ANSIColor.GREEN+getHealth()
-        +ANSIColor.RESET+", Attack Power: "
-        +ANSIColor.RED+getAttackPower() 
-        +ANSIColor.RESET+" Special Ability: "
-        +ANSIColor.RED+getSpecialAbility()
-        +ANSIColor.RESET;
+    public boolean specialAbilityUsed() {
+        return specialAbilityUsed;
     }
 
-    public void setSpecialAbilityUsed(boolean used) {
-        this.specialAbilityUsed = used;
+    // === Setters ===
+    public void setHealth(int health) {
+        this.health = Math.max(0, Math.min(health, maxHealth));
+        if (this.health <= 0) alive = false;
     }
 
     public void setAttackPower(int attackPower) {
         this.attackPower = attackPower;
     }
 
-    public abstract void useSpecialAbility(Character target);
-
-    public boolean specialAbilityUsed() {
-        return specialAbilityUsed;
+    public void setSpecialAbilityUsed(boolean used) {
+        this.specialAbilityUsed = used;
     }
 
-    @Override public void takeDamage(int damage) {
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
+    // === Combat Methods ===
+    public int attack() {
+        return attackPower;
+    }
+
+    public void takeDamage(int damage) {
         if (damage < 0) {
             throw new IllegalArgumentException("Damage cannot be negative");
         }
-        setHealth(health - damage);
+        setHealth(this.health - damage);
     }
 
-    public void setHealth(int health) {
-        this.health = health;
-        if (this.health <= 0) {
-            this.alive = false;
-            this.health = 0; // Ensure health does not go below zero
-        }
+    public int heal() {
+        int healAmount = (int) (Math.random() * 40) + 20;
+        int actualHealed = Math.min(healAmount, maxHealth - health);
+        health += actualHealed;
+
+        System.out.println(ANSIColor.BLUE + name + ANSIColor.RESET + " heals for " +
+                           ANSIColor.GREEN + actualHealed + ANSIColor.RESET + " health.");
+        return actualHealed;
     }
-
-    @Override public void heal() {
-        int randomHeal = (int) (Math.random() * 40) + 20; // Random heal between 20 and 40
-        if (health + randomHeal > maxHealth) { // Assuming max health is 100
-            randomHeal = maxHealth - health; // Heal only up to max health
-            health = maxHealth; // Set health to max
-        }
-        else health += randomHeal;
-        System.out.println(ANSIColor.BLUE+name
-        +ANSIColor.RESET+" heals for "
-        +ANSIColor.GREEN+randomHeal
-        +ANSIColor.RESET+" health.");
-    }
-
-
-
-
-
 
     public void gainExperience(int amount) {
         if (amount < 0) {
             throw new IllegalArgumentException("Experience gain cannot be negative");
         }
         experience += amount;
-        System.out.println(ANSIColor.BLUE+name
-        +ANSIColor.RESET+" has gained "
-        +ANSIColor.PURPLE+amount
-        +ANSIColor.RESET+" experience points.");
-        // Check for level up
-        if (experience >= 100 * level) { // Example condition for leveling up
+
+        System.out.println(ANSIColor.BLUE + name + ANSIColor.RESET + " has gained " +
+                           ANSIColor.PURPLE + amount + ANSIColor.RESET + " experience points.");
+
+        if (experience >= getExperienceToLevelUp()) {
             levelUp();
         }
     }
 
-    public void levelUp() {
-        level++;
-        experience = 0; // Reset experience on level up
-        attackPower += 5; // Increase attack power on level up
-        maxHealth += 10; // Increase max health on level up
-        health += 10; // Increase health on level up
-        
-        System.out.println(ANSIColor.BLUE+name
-        +ANSIColor.RESET+" has leveled up to level "
-        +ANSIColor.PURPLE+level
-        +ANSIColor.RESET+"!");
+    protected int getExperienceToLevelUp() {
+        return 100 * level;
     }
 
+    protected void levelUp() {
+        level++;
+        experience = 0;
+        attackPower += 5;
+        maxHealth += 20;
+        health = maxHealth; // Restore health to max on level up
 
+        System.out.println(ANSIColor.BLUE + name + ANSIColor.RESET + " has leveled up to level " +
+                           ANSIColor.PURPLE + level + ANSIColor.RESET + "!");
+    }
 
+    @Override
+    public String toString() {
+        return "Character: " + ANSIColor.BLUE + name + ANSIColor.RESET +
+               ", Health: " + ANSIColor.GREEN + health + "/" + maxHealth + ANSIColor.RESET +
+               ", Attack Power: " + ANSIColor.RED + attackPower + ANSIColor.RESET +
+               ", Special Ability: " + ANSIColor.RED + specialAbility + ANSIColor.RESET;
+    }
+
+    // === Abstract Method ===
+    public abstract void useSpecialAbility(AbstractCharacter target);
 }
